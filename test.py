@@ -1,4 +1,4 @@
-from module.detect import *
+from utils import YoloDetect
 import json
 
 def main():
