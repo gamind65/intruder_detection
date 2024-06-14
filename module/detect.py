@@ -10,7 +10,7 @@ def isInside(contour, corr):
     return True if cv2.pointPolygonTest(contour, corr, False) == 1 else False
 
 class YoloDetect():
-    def __init__(self, model_path, poly, conf_thresh=0.5, cam_idx=0):
+    def __init__(self, model_path, poly, video_cap, conf_thresh=0.5):
         """
         Parameters:
         model_path: path to YOLO-v8 model
@@ -20,10 +20,10 @@ class YoloDetect():
         """
         self.model = YOLO(model_path) # load model
         self.poly = np.array(poly, np.int32).reshape(-1,1,2) # points' corrdinate of polygon
+        self.cap = video_cap # object video capture 
         self.conf_threshold = conf_thresh # confidence threshold
         self.count = 0 # count number of people inside the zone 
         self.classes = 0 # class index of 'people' for YOLO
-        self.cam_idx = cam_idx # webcam index
         
     # detect people using YOLO-v8
     def predict(self, img):
@@ -41,18 +41,13 @@ class YoloDetect():
                 print("One person out!")
 
     # run function
-    def detect(self, mode=1): # 0 for using webcam || 1 for using demo video
-        if mode == 0:  
-            cap = cv2.VideoCapture(r'test.mp4')
-        else:
-            cap = cv2.VideoCapture(self.cam_idx) 
-            
-        assert(cap.isOpened())
+    def detect(self):
+        assert(self.cap.isOpened())
         
         try:
             while True: 
                 # Capture each frame 
-                ret, frame = cap.read() 
+                ret, frame = self.cap.read() 
                 if not ret:
                     print("Capture failed")
                     break
@@ -97,6 +92,5 @@ class YoloDetect():
                 if cv2.waitKey(1) == 27:  # ESC key to break
                     break    
         finally:
-            cap.release()
             cv2.destroyAllWindows()
             
