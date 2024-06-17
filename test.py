@@ -2,8 +2,7 @@ from module.detect import *
 import json
 
 def test(frame, yo, mode=0):
-        if mode == 0: yo.track(frame)
-        else: yo.detect(frame)
+        yo.track(frame) if mode == 0 else yo.detect(frame)
 
 def main():
     # setup 
