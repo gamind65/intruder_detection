@@ -7,6 +7,24 @@ import time
 def isInside(contour, corr):
     return True if cv2.pointPolygonTest(contour, corr, False) == 1 else False
 
+class Human():
+    def __init__(self, id, entered_time):
+        """
+        Parameters:
+        id: unique identifier for each human
+        entered_time: time when this human entered the zone
+        """
+        self.id = id
+        self.entered_time = entered_time
+
+    # warn every 5 seconds staying 
+    def update_second(self):
+        second = time.time() - self.entered_time
+        if second > 5:
+            print(f"Human with id {self.id} entered without leaving for over 5 seconds") # give warning
+            self.entered_time += 5
+        
+
 class YoloDetect():
     def __init__(self, model_path, poly, conf_thresh=0.5):
         """
@@ -26,17 +44,6 @@ class YoloDetect():
     # detect people using YOLO-v8
     def predict(self, img):
         return self.model.predict(img, classes=self.classes, conf=self.conf_threshold)
-    
-    # give warning with given condition
-    def detect_warn(self, curr):
-        if curr == 0:
-            if self.count != curr:
-                print("Only person left!")
-        else:
-            if self.count > curr:
-                print("New person in!")
-            elif self.count < curr:
-                print("One person out!")
 
     # run function
     def detect(self, frame):
@@ -73,7 +80,12 @@ class YoloDetect():
                 cv2.rectangle(frame, (xA,yA), (xB,yB), color, 3)
             
         # give warning message and update counter
-        self.detect_warn(current_count)
+
+        ### UPDATE TRACKER AND WARINING MESSAGEE HERE ### 
+        """
+        
+        """
+
         self.count = current_count
         cv2.putText(frame, f'count: {self.count}', (30,50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
         
@@ -117,7 +129,13 @@ class YoloDetect():
                 cv2.rectangle(frame, (xA,yA), (xB,yB), color, 3)
             
         # give warning message and update counter
-        self.detect_warn(current_count)
+        
+
+        ### UPDATE TRACKER AND WARINING MESSAGEE HERE ###
+        """
+        
+        """
+
         self.count = current_count
         cv2.putText(frame, f'count: {self.count}', (30,50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
             
